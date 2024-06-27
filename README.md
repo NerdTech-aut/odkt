@@ -59,7 +59,12 @@ Wenn Python nicht installiert ist, bitte die aktuelle Version herunterladen.
 ### Python-Pakete:   
 Nachdem Python erfolgreich installiert wurde, bitte die folgenden Pakete installieren:
 - pyproj
-- Folium  
+- folium
+- pywebview
+- pandas
+- geopandas
+- beautifulsoup4
+- geopy
 
 Ich habe eine Datei vorbereitet, um die Installation dieser Pakete zu erleichtern.  
 Windows-Nutzer mit installierter Windows Terminal Anwendung: Im Datei Explorer rechts klicken im ODKT Ordner und auswählen der Option "In Terminal öffnen". Dadurch wird ein neues Windows Terminal Fenster an der richtigen Stelle geöffnet.  

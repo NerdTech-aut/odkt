@@ -7,13 +7,11 @@ import webview
 import requests
 import pandas as pd
 import geopandas as gpd
-import webview.menu as wm
 from zipfile import ZipFile
 from bs4 import BeautifulSoup
 from geopy.geocoders import Nominatim
 from configparser import ConfigParser
 from pyproj.transformer import Transformer
-import time
 
 #https://pywebview.flowrl.com/examples/js_api.html
 
@@ -51,8 +49,8 @@ class Content:
         """
         self.config = ConfigParser()
         self.config.read("config.ini")
-        #self.cellular()
-        #self.fixed()
+        self.cellular()
+        self.fixed()
         self.grant()
 
     def cellular(self):
