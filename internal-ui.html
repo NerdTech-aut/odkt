@@ -1,0 +1,316 @@
+<!DOCTYPE html>
+<html>
+<head lang="en">
+<meta charset="UTF-8">
+
+<style>
+    body {
+        background-color: #E8FEFF;
+        font-family: Arial, Helvetica, sans-serif;
+        font-weight: bold;
+    }
+
+    label {
+        margin-left: 0.3rem;
+        margin-right: 0.3rem;
+    }
+
+    button {
+        font-size: 100%;
+        padding: 0.5rem;
+        margin: 0.3rem;
+        text-transform: uppercase;
+    }
+
+    h1 {
+        font-size: 3em;
+        text-align: center;
+    }
+
+    h2 {
+        font-size: 2em;
+        text-align: center;
+    }
+
+    ul {
+        padding: 0px;
+        margin: 0px;
+    }
+
+    li {
+        font-size: 1.5em;
+        list-style-type: none;
+    }
+
+    button {
+        text-transform: none;
+        padding: 0px;
+        margin: 0px;
+    }
+
+    ::placeholder {
+        color: #5FA6AA;
+        opacity: 1;
+    }
+
+    #main-container {
+        width: 100%;
+    }
+
+    .input-area {
+        margin-left: 10%;
+        width: 80%;
+        display: flex;
+    }
+
+    .input-field {
+        font-size: 1.5em;
+        border-radius: 10px;
+        background-color: #E8FEFF;
+        padding-left: 1%;
+        border: 3px solid #5FA6AA;
+        margin-block-end: 0.83em;
+    }
+
+    #location-input {
+        width: 55%;
+        padding-right: 0%;
+        margin-left: 5%;
+    }
+
+    #radius-input {
+        width: 17%;
+    }
+
+    #creation-input {
+        width: 18%;
+        margin-left: 5%;
+        padding-left: 0%;
+        background-color: #5FA6AA;
+        color: white;
+    }
+
+    .selection-area {
+        box-sizing: border-box;
+        margin-left: 10%;
+        width: 80%;
+        display: flex;
+        border: 3px solid #5FA6AA;
+        border-radius: 10px;
+        margin-block-end: 1em;
+    }
+
+    .selection-container {
+        width: 33.33%;
+        margin: 0.5em 0px 0.5em 0.5em;
+    }
+    
+    .selection-container-header {
+        font-size: 1.75em;
+        margin: 0px;
+        margin-block-end: 0.5em;
+    }
+
+    .cbx {
+        width: 1.5em;
+        height: 1.5em;
+    }
+
+    #status-update-area {
+        width: 80%;
+        display: flex;   
+        margin-left: 10%;
+    }
+
+    #status-container {
+        width: 70%;
+        display: flex;
+        border: 3px solid #5FA6AA;
+        border-radius: 10px;
+        word-wrap: break-word;
+        font-size: 1.5em;
+    }
+
+    #status-text {
+        margin-left: 0.5em;
+        margin-block-start: 0.5em;
+        margin-block-end: 0.5em;
+    }
+    
+    #update-input {
+        width: 25%;
+        margin-left: 5%;
+        padding-left: 0%;
+        background-color: #5FA6AA;
+        color: white;
+    }
+
+    #creation-input:hover, #update-input:hover {
+        background-color: #0299a3;
+        color: white;
+        border: 3px solid #0299a3;
+    }
+</style>
+</head>
+<body>
+    <div id="main-container">
+        <h1>Open Data Karten Tool</h1>
+        <h2>Mobilfunk und Festnetz Österreich</h2>
+
+        <div class="input-area">
+            <input class="input-field" id="radius-input" type="number" placeholder="Radius: 2km" step="0.1" min="0.1" max="10" onclick="onClickRadiusField()"/>
+            <input class="input-field" id="location-input" placeholder="Raster-ID, Koordinaten oder Adresse"/>
+            <button class="input-field" id="creation-input" onClick="onClickSubmitButton()">Karte erstellen</button>
+        </div>
+
+        <div class="selection-area">
+            <div class="selection-container">
+                <p class="selection-container-header">
+                    5G Band n78
+                </p>
+                <ul>
+                    <li><input type="checkbox" class="cbx" id="A1TelekomAustria-5Gn78" name="A1" value="A1"> A1 Telekom Austria</li>
+                    <li><input type="checkbox" class="cbx" id="MagentaTelekom-5Gn78" name="Magenta" value="Magenta"> Magenta Telekom</li>
+                    <li><input type="checkbox" class="cbx" id="HutchisonDreiAustria-5Gn78" name="Drei" value="Drei"> Hutchison Drei Austria</li>
+                    <li><input type="checkbox" class="cbx" id="GrazHolding-5Gn78" name="Graz Holding" value="Graz Holding"> Graz Holding</li>
+                    <li><input type="checkbox" class="cbx" id="Liwest-5Gn78" name="Liwest" value="Liwest"> Liwest</li>
+                    <li><input type="checkbox" class="cbx" id="MassResponse-5Gn78" name="Spusu" value="Spusu"> Mass Response</li>
+                    <li><input type="checkbox" class="cbx" id="SalzburgAG-5Gn78" name="Salzburg AG" value="Salzburg AG"> Salzburg AG</li>
+                </ul>
+            </div>
+
+            <div class="selection-container">
+                <p class="selection-container-header">
+                    Mobilfunk Speedmap
+                </p>
+                <ul>
+                    <li><input type="checkbox" class="cbx" id="A1TelekomAustria-Speedmap" name="A1" value="A1"> A1 Telekom Austria</li>
+                    <li><input type="checkbox" class="cbx" id="MagentaTelekom-Speedmap" name="Magenta" value="Magenta"> Magenta Telekom</li>
+                    <li><input type="checkbox" class="cbx" id="HutchisonDreiAustria-Speedmap" name="Drei" value="Drei"> Hutchison Drei Austria</li>
+                </ul>
+            </div>
+
+            <div class="selection-container">
+                <p class="selection-container-header">
+                    Festnetz
+                </p>
+                <ul>
+                    <li><input type="checkbox" class="cbx" id="Festnetz" name="Festnetz" value="Festnetz"> Festnetz</li>
+                    <li><input type="checkbox" class="cbx" id="GeförderterAusbau" name="Geförderter Ausbau" value="Geförderter Ausbau"> Geförderter Ausbau</li>
+                </ul>
+            </div>
+        </div>
+        <div id="status-update-area">
+            <div id="status-container">
+                <p id="status-text">ODKT offline (kein pywebview)</p>
+            </div>
+            <button id="update-input" class="input-field" onClick="onClickUpdateButton()">Daten aktualisieren</button>
+        </div>
+
+    </div>
+<script>
+    let status_request_loop = false;
+
+    window.addEventListener('pywebviewready', function() {
+        var container = document.getElementById('status-text')
+        container.innerHTML = 'ODKT bereit (pywebview)'
+    })
+
+    function showResponse(response) {
+        var container = document.getElementById('status-text')
+        response_message = response.message
+        container.innerText = response_message
+        pywebview.api.msg(response_message)
+        if(!response_message.includes("Schritt 53/53")) {
+            status_request_loop = false
+        }
+    }
+
+    function initialize() {
+        pywebview.api.init().then(showResponse)
+    }
+    
+
+/*----------------------------------------------------------------------------------*/
+
+    function onClickRadiusField() {
+        if(document.getElementById("radius-input").value.length == 0)
+        {
+            document.getElementById("radius-input").value = 2;
+        }
+    }
+
+    function onClickSubmitButton() {
+        var radiusInputValue = document.getElementById('radius-input').value;
+        console.log(radiusInputValue);
+        if(radiusInputValue.length == 0)
+        {
+            radiusInputValue = 2;
+            console.log(radiusInputValue);
+        }
+        var locationInputValue = document.getElementById('location-input').value;
+        console.log(locationInputValue);
+        
+        var A1TelekomAustria_5Gn78_Checked = document.getElementById('A1TelekomAustria-5Gn78').checked;
+        console.log(A1TelekomAustria_5Gn78_Checked);
+        var MagentaTelekom_5Gn78_Checked = document.getElementById('MagentaTelekom-5Gn78').checked;
+        console.log(MagentaTelekom_5Gn78_Checked);
+        var HutchisonDreiAustria_5Gn78_Checked = document.getElementById('HutchisonDreiAustria-5Gn78').checked;
+        console.log(HutchisonDreiAustria_5Gn78_Checked);
+
+        var GrazHolding_5Gn78_Checked = document.getElementById('GrazHolding-5Gn78').checked;
+        console.log(GrazHolding_5Gn78_Checked);
+        var Liwest_5Gn78_Checked = document.getElementById('Liwest-5Gn78').checked;
+        console.log(Liwest_5Gn78_Checked);
+        var MassResponse_5Gn78_Checked = document.getElementById('MassResponse-5Gn78').checked;
+        console.log(MassResponse_5Gn78_Checked);
+        var SalzburgAG_5Gn78_Checked = document.getElementById('SalzburgAG-5Gn78').checked;
+        console.log(SalzburgAG_5Gn78_Checked);
+        
+        var A1TelekomAustria_Speedmap_Checked = document.getElementById('A1TelekomAustria-Speedmap').checked;
+        console.log(A1TelekomAustria_Speedmap_Checked);
+        var MagentaTelekom_Speedmap_Checked = document.getElementById('MagentaTelekom-Speedmap').checked;
+        console.log(MagentaTelekom_Speedmap_Checked);
+        var HutchisonDreiAustria_Speedmap_Checked = document.getElementById('HutchisonDreiAustria-Speedmap').checked;
+        console.log(HutchisonDreiAustria_Speedmap_Checked);
+        
+        var Festnetz_Checked = document.getElementById('Festnetz').checked;
+        console.log(Festnetz_Checked);
+        var GeförderterAusbau_Checked = document.getElementById('GeförderterAusbau').checked;
+        console.log(GeförderterAusbau_Checked);
+
+        status_request_loop = true
+        getMapProgress()
+        pywebview.api.generateMap(radiusInputValue, locationInputValue, A1TelekomAustria_5Gn78_Checked, MagentaTelekom_5Gn78_Checked, HutchisonDreiAustria_5Gn78_Checked, GrazHolding_5Gn78_Checked, Liwest_5Gn78_Checked, MassResponse_5Gn78_Checked, SalzburgAG_5Gn78_Checked, A1TelekomAustria_Speedmap_Checked, MagentaTelekom_Speedmap_Checked, HutchisonDreiAustria_Speedmap_Checked, Festnetz_Checked, GeförderterAusbau_Checked).then(showResponse)
+    }
+
+    function updateContentProgress() {
+        const progressBar = document.getElementById('progress');
+        pywebview.api.updateContentProgress().then(showResponse);
+        if (status_request_loop == true) {
+            setTimeout(updateContentProgress, 100);
+        }
+        else {
+            setTimeout(initialize, 5000)
+        }
+    }
+
+    function getMapProgress() {
+        const progressBar = document.getElementById('progress');
+        pywebview.api.getMapProgress().then(showResponse);
+        if (status_request_loop == true) {
+            setTimeout(getMapProgress, 100);
+        }
+        else {
+            setTimeout(initialize, 5000)
+        }
+    }
+
+    function onClickUpdateButton() {
+        status_request_loop = true
+        updateContentProgress()
+        pywebview.api.updateContent()
+    }
+</script>
+</body>
+</html>
