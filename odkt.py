@@ -104,45 +104,45 @@ class Content:
         self.set_message("Schritt 20/53 - Magenta Speedmap Datenbank fertig")
         #Drei
         Drei_csv_n78 = self.load_data(self.config.get("Content", "Drei_csv_url_n78")).decode("utf-8")
-        self.set_message("Schritt 21/53 -  Drei n78 CSV")
+        self.set_message("Schritt 21/53 - Drei n78 CSV")
         Drei_df_n78 = self.cellular_csv_str_to_df(Drei_csv_n78)
-        self.set_message("Schritt 22/53 -  Drei n78 Dataframe")
+        self.set_message("Schritt 22/53 - Drei n78 Dataframe")
         self.df_into_db(Drei_df_n78, "Drei_3500")
-        self.set_message("Schritt 23/53 -  Drei n78 Datenbank fertig")
+        self.set_message("Schritt 23/53 - Drei n78 Datenbank fertig")
         Drei_csv_Speedmap = self.load_data(self.config.get("Content", "Drei_scv_url_Speedmap")).decode("utf-8")
-        self.set_message("Schritt 24/53 -  Drei Speedmap CSV")
+        self.set_message("Schritt 24/53 - Drei Speedmap CSV")
         Drei_df_Speedmap = self.cellular_csv_str_to_df(Drei_csv_Speedmap)
-        self.set_message("Schritt 25/53 -  Drei Speedmap Dataframe")
+        self.set_message("Schritt 25/53 - Drei Speedmap Dataframe")
         self.df_into_db(Drei_df_Speedmap, "Drei_Speedmap")
-        self.set_message("Schritt 26/53 -  Drei Speedmap Datenbank fertig")
+        self.set_message("Schritt 26/53 - Drei Speedmap Datenbank fertig")
         #Spusu
         Spusu_csv_n78 = self.load_data(self.config.get("Content", "Spusu_csv_url_n78")).decode("utf-8")
-        self.set_message("Schritt 27/53 -  Spusu n78 CSV")
+        self.set_message("Schritt 27/53 - Spusu n78 CSV")
         Spusu_df_n78 = self.cellular_csv_str_to_df(Spusu_csv_n78)
-        self.set_message("Schritt 28/53 -  Spusu n78 Dataframe")
+        self.set_message("Schritt 28/53 - Spusu n78 Dataframe")
         self.df_into_db(Spusu_df_n78, "Spusu_3500")
-        self.set_message("Schritt 29/53 -  Spusu n78 Datenbank fertig")
+        self.set_message("Schritt 29/53 - Spusu n78 Datenbank fertig")
         #Liwest
         Liwest_csv_n78 = self.load_data(self.config.get("Content", "Liwest_csv_url_n78")).decode("utf-8")
-        self.set_message("Schritt 30/53 -  Liwest n78 CSV")
+        self.set_message("Schritt 30/53 - Liwest n78 CSV")
         Liwest_df_n78 = self.cellular_csv_str_to_df(Liwest_csv_n78)
-        self.set_message("Schritt 31/53 -  Liwest n78 Dataframe")
+        self.set_message("Schritt 31/53 - Liwest n78 Dataframe")
         self.df_into_db(Liwest_df_n78, "Liwest_3500")
-        self.set_message("Schritt 32/53 -  Liwest n78 Datenbank fertig")
+        self.set_message("Schritt 32/53 - Liwest n78 Datenbank fertig")
         #Salzburg AG
         SalzburgAG_csv_n78 = self.load_data(self.config.get("Content", "SalzburgAG_csv_url_n78")).decode("utf-8")
-        self.set_message("Schritt 33/53 -  Salzburg AG n78 CSV")
+        self.set_message("Schritt 33/53 - Salzburg AG n78 CSV")
         SalzburgAG_df_n78 = self.cellular_csv_str_to_df(SalzburgAG_csv_n78)
-        self.set_message("Schritt 34/53 -  Salzburg AG n78 Dataframe")
+        self.set_message("Schritt 34/53 - Salzburg AG n78 Dataframe")
         self.df_into_db(SalzburgAG_df_n78, "CableLinkAir_3500")
-        self.set_message("Schritt 35/53 -  Salzburg AG n78 Datenbank fertig")
+        self.set_message("Schritt 35/53 - Salzburg AG n78 Datenbank fertig")
         #Graz Holding
         GrazHolding_csv_n78 = self.load_data(self.config.get("Content", "GrazHolding_csv_url_n78")).decode("utf-8")
-        self.set_message("Schritt 36/53 -  Graz Holding n78 CSV")
+        self.set_message("Schritt 36/53 - Graz Holding n78 CSV")
         GrazHolding_df_n78 = self.cellular_csv_str_to_df(GrazHolding_csv_n78)
-        self.set_message("Schritt 37/53 -  Graz Holding n78 Dataframe")
+        self.set_message("Schritt 37/53 - Graz Holding n78 Dataframe")
         self.df_into_db(GrazHolding_df_n78, "Citycom_3500")
-        self.set_message("Schritt 38/53 -  Graz Holding n78 Datenbank fertig")
+        self.set_message("Schritt 38/53 - Graz Holding n78 Datenbank fertig")
 
     def load_data(self, url:str) -> bytes:
         """
@@ -236,7 +236,7 @@ class Content:
         df = df[['NORTH', 'EAST', 'RFC_DATE', 'DL_NORMAL', 'UL_NORMAL', 'DL_MAX', 'UL_MAX']]
         return df
     
-    def df_into_db(self, df:pd.DataFrame, table):
+    def df_into_db(self, df:pd.DataFrame, table:str):
         """
         Function to convert a cellular open data csv file to pandas dataframe
 
@@ -584,7 +584,7 @@ class Map:
         """
         return tuple(int(entry/100) for entry in Transformer.from_crs(4326, 3035).transform(location[0], location[1]))
     
-    def border(self, center_ETRS89e, center_WSG84, radius_hectometers:float) -> folium.Polygon:
+    def border(self, center_ETRS89e:tuple, center_WSG84:tuple, radius_hectometers:float) -> folium.Polygon:
         """
         Function to create the border polygon around the selected map area
 
@@ -859,7 +859,7 @@ class Map:
         "</tr>"
         "</table>").format(raster_id, operator, network_frequency, layer_type, average_download, average_upload, maximum_download, maximum_upload, date, lat, lon, lat, lon, operator, cellmapper_mnc, cellmapper_network_technology, lat, lon)
     
-    def fixed(self, center_ETRS89e:tuple, radius_hectometers) -> list:
+    def fixed(self, center_ETRS89e:tuple, radius_hectometers:float) -> list:
         """
         Function to create the fixed broadband layers in the selected map area
 

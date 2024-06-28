@@ -209,7 +209,7 @@
 
     </div>
 <script>
-    let status_request_loop = false;
+    var status_request_loop = false;
 
     window.addEventListener('pywebviewready', function() {
         var container = document.getElementById('status-text')
@@ -220,8 +220,7 @@
         var container = document.getElementById('status-text')
         response_message = response.message
         container.innerText = response_message
-        pywebview.api.msg(response_message)
-        if(!response_message.includes("Schritt 53/53")) {
+        if(response_message.includes("Schritt 53/53")) {
             status_request_loop = false
         }
     }
