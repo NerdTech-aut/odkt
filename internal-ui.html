@@ -220,7 +220,7 @@
         var container = document.getElementById('status-text')
         response_message = response.message
         container.innerText = response_message
-        if(response_message.includes("Schritt 53/53")) {
+        if(response_message.includes("Schritt 56/56")) {
             status_request_loop = false
         }
     }
@@ -290,7 +290,7 @@
             setTimeout(updateContentProgress, 100);
         }
         else {
-            setTimeout(initialize, 5000)
+            setTimeout(initialize, 1000)
         }
     }
 
@@ -301,7 +301,7 @@
             setTimeout(getMapProgress, 100);
         }
         else {
-            setTimeout(initialize, 5000)
+            setTimeout(initialize, 1000)
         }
     }
 

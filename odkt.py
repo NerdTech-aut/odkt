@@ -1,6 +1,7 @@
 import io
 import re
 import json
+import time
 import folium
 import sqlite3
 import webview
@@ -47,8 +48,8 @@ class Content:
         Parameters:
             self
         """
-        self.config = ConfigParser()
-        self.config.read("config.ini")
+        self._config = ConfigParser()
+        self._config.read("config.ini")
         self.cellular()
         self.fixed()
         self.grant()
@@ -61,88 +62,88 @@ class Content:
             self
         """
         #A1
-        A1_html = self.load_data(self.config.get("Content", "A1_html_url")).decode("utf-8")
-        self.set_message("Schritt 1/53 - A1 HTML")
+        A1_html = self.load_data(self._config.get("Content", "A1_html_url")).decode("utf-8")
+        self.set_message("Schritt 1/56 - A1 HTML")
         A1_zip_links = self.cellular_A1_get_zip_links(A1_html)
-        self.set_message("Schritt 2/53 - A1 ZIP links")
+        self.set_message("Schritt 2/56 - A1 ZIP links")
         A1_zip_n78 = self.load_data(A1_zip_links[0])
-        self.set_message("Schritt 3/53 - A1 n78 ZIP")
+        self.set_message("Schritt 3/56 - A1 n78 ZIP")
         A1_csv_n78 = self.zip_to_csv_str(A1_zip_n78)
-        self.set_message("Schritt 4/53 - A1 n78 CSV")
+        self.set_message("Schritt 4/56 - A1 n78 CSV")
         A1_df_n78 = self.cellular_csv_str_to_df(A1_csv_n78)
-        self.set_message("Schritt 5/53 - A1 n78 Dataframe")
+        self.set_message("Schritt 5/56 - A1 n78 Dataframe")
         self.df_into_db(A1_df_n78, "A1_3500")
-        self.set_message("Schritt 6/53 - A1 n78 Datenbank fertig")
+        self.set_message("Schritt 6/56 - A1 n78 Datenbank fertig")
         A1_zip_Speedmap = self.load_data(A1_zip_links[1])
-        self.set_message("Schritt 7/53 - A1 Speedmap ZIP")
+        self.set_message("Schritt 7/56 - A1 Speedmap ZIP")
         A1_csv_Speedmap = self.zip_to_csv_str(A1_zip_Speedmap)
-        self.set_message("Schritt 8/53 - A1 Speedmap CSV")
+        self.set_message("Schritt 8/56 - A1 Speedmap CSV")
         A1_df_Speedmap = self.cellular_csv_str_to_df(A1_csv_Speedmap)
-        self.set_message("Schritt 9/53 -  A1 Speedmap Dataframe")
+        self.set_message("Schritt 9/56 -  A1 Speedmap Dataframe")
         self.df_into_db(A1_df_Speedmap, "A1_Speedmap")
-        self.set_message("Schritt 10/53 - A1 Speedmap Datenbank fertig")
+        self.set_message("Schritt 10/56 - A1 Speedmap Datenbank fertig")
         #Magenta
-        Magenta_html_n78 = self.load_data(self.config.get("Content", "Magenta_html_url_n78")).decode("utf-8")
-        self.set_message("Schritt 11/53 - Magenta n78 HTML")
+        Magenta_html_n78 = self.load_data(self._config.get("Content", "Magenta_html_url_n78")).decode("utf-8")
+        self.set_message("Schritt 11/56 - Magenta n78 HTML")
         Magenta_csv_link_n78 = self.cellular_Magenta_get_csv_link(Magenta_html_n78)
-        self.set_message("Schritt 12/53 - Magenta n78 CSV link")
+        self.set_message("Schritt 12/56 - Magenta n78 CSV link")
         Magenta_csv_n78 = self.load_data(Magenta_csv_link_n78).decode("utf-8")
-        self.set_message("Schritt 13/53 - Magenta n78 CSV")
+        self.set_message("Schritt 13/56 - Magenta n78 CSV")
         Magenta_df_n78 = self.cellular_csv_str_to_df(Magenta_csv_n78)
-        self.set_message("Schritt 14/53 - Magenta n78 Dataframe")
+        self.set_message("Schritt 14/56 - Magenta n78 Dataframe")
         self.df_into_db(Magenta_df_n78, "Magenta_3500")
-        self.set_message("Schritt 15/53 - Magenta n78 Datenbank fertig")
-        Magenta_html_Speedmap = self.load_data(self.config.get("Content", "Magenta_html_url_Speedmap")).decode("utf-8")
-        self.set_message("Schritt 16/53 - Magenta Speedmap HTML")
+        self.set_message("Schritt 15/56 - Magenta n78 Datenbank fertig")
+        Magenta_html_Speedmap = self.load_data(self._config.get("Content", "Magenta_html_url_Speedmap")).decode("utf-8")
+        self.set_message("Schritt 16/56 - Magenta Speedmap HTML")
         Magenta_csv_link_Speedmap = self.cellular_Magenta_get_csv_link(Magenta_html_Speedmap)
-        self.set_message("Schritt 17/53 - Magenta Speedmap CSV link")
+        self.set_message("Schritt 17/56 - Magenta Speedmap CSV link")
         Magenta_csv_Speedmap = self.load_data(Magenta_csv_link_Speedmap).decode("utf-8")
-        self.set_message("Schritt 18/53 - Magenta Speedmap CSV")
+        self.set_message("Schritt 18/56 - Magenta Speedmap CSV")
         Magenta_df_Speedmap = self.cellular_csv_str_to_df(Magenta_csv_Speedmap)
-        self.set_message("Schritt 19/53 - Magenta Speedmap Dataframe")
+        self.set_message("Schritt 19/56 - Magenta Speedmap Dataframe")
         self.df_into_db(Magenta_df_Speedmap, "Magenta_Speedmap")
-        self.set_message("Schritt 20/53 - Magenta Speedmap Datenbank fertig")
+        self.set_message("Schritt 20/56 - Magenta Speedmap Datenbank fertig")
         #Drei
-        Drei_csv_n78 = self.load_data(self.config.get("Content", "Drei_csv_url_n78")).decode("utf-8")
-        self.set_message("Schritt 21/53 - Drei n78 CSV")
+        Drei_csv_n78 = self.load_data(self._config.get("Content", "Drei_csv_url_n78")).decode("utf-8")
+        self.set_message("Schritt 21/56 - Drei n78 CSV")
         Drei_df_n78 = self.cellular_csv_str_to_df(Drei_csv_n78)
-        self.set_message("Schritt 22/53 - Drei n78 Dataframe")
+        self.set_message("Schritt 22/56 - Drei n78 Dataframe")
         self.df_into_db(Drei_df_n78, "Drei_3500")
-        self.set_message("Schritt 23/53 - Drei n78 Datenbank fertig")
-        Drei_csv_Speedmap = self.load_data(self.config.get("Content", "Drei_scv_url_Speedmap")).decode("utf-8")
-        self.set_message("Schritt 24/53 - Drei Speedmap CSV")
+        self.set_message("Schritt 23/56 - Drei n78 Datenbank fertig")
+        Drei_csv_Speedmap = self.load_data(self._config.get("Content", "Drei_scv_url_Speedmap")).decode("utf-8")
+        self.set_message("Schritt 24/56 - Drei Speedmap CSV")
         Drei_df_Speedmap = self.cellular_csv_str_to_df(Drei_csv_Speedmap)
-        self.set_message("Schritt 25/53 - Drei Speedmap Dataframe")
+        self.set_message("Schritt 25/56 - Drei Speedmap Dataframe")
         self.df_into_db(Drei_df_Speedmap, "Drei_Speedmap")
-        self.set_message("Schritt 26/53 - Drei Speedmap Datenbank fertig")
+        self.set_message("Schritt 26/56 - Drei Speedmap Datenbank fertig")
         #Spusu
-        Spusu_csv_n78 = self.load_data(self.config.get("Content", "Spusu_csv_url_n78")).decode("utf-8")
-        self.set_message("Schritt 27/53 - Spusu n78 CSV")
+        Spusu_csv_n78 = self.load_data(self._config.get("Content", "Spusu_csv_url_n78")).decode("utf-8")
+        self.set_message("Schritt 27/56 - Spusu n78 CSV")
         Spusu_df_n78 = self.cellular_csv_str_to_df(Spusu_csv_n78)
-        self.set_message("Schritt 28/53 - Spusu n78 Dataframe")
+        self.set_message("Schritt 28/56 - Spusu n78 Dataframe")
         self.df_into_db(Spusu_df_n78, "Spusu_3500")
-        self.set_message("Schritt 29/53 - Spusu n78 Datenbank fertig")
+        self.set_message("Schritt 29/56 - Spusu n78 Datenbank fertig")
         #Liwest
-        Liwest_csv_n78 = self.load_data(self.config.get("Content", "Liwest_csv_url_n78")).decode("utf-8")
-        self.set_message("Schritt 30/53 - Liwest n78 CSV")
+        Liwest_csv_n78 = self.load_data(self._config.get("Content", "Liwest_csv_url_n78")).decode("utf-8")
+        self.set_message("Schritt 30/56 - Liwest n78 CSV")
         Liwest_df_n78 = self.cellular_csv_str_to_df(Liwest_csv_n78)
-        self.set_message("Schritt 31/53 - Liwest n78 Dataframe")
+        self.set_message("Schritt 31/56 - Liwest n78 Dataframe")
         self.df_into_db(Liwest_df_n78, "Liwest_3500")
-        self.set_message("Schritt 32/53 - Liwest n78 Datenbank fertig")
+        self.set_message("Schritt 32/56 - Liwest n78 Datenbank fertig")
         #Salzburg AG
-        SalzburgAG_csv_n78 = self.load_data(self.config.get("Content", "SalzburgAG_csv_url_n78")).decode("utf-8")
-        self.set_message("Schritt 33/53 - Salzburg AG n78 CSV")
+        SalzburgAG_csv_n78 = self.load_data(self._config.get("Content", "SalzburgAG_csv_url_n78")).decode("utf-8")
+        self.set_message("Schritt 33/56 - Salzburg AG n78 CSV")
         SalzburgAG_df_n78 = self.cellular_csv_str_to_df(SalzburgAG_csv_n78)
-        self.set_message("Schritt 34/53 - Salzburg AG n78 Dataframe")
+        self.set_message("Schritt 34/56 - Salzburg AG n78 Dataframe")
         self.df_into_db(SalzburgAG_df_n78, "CableLinkAir_3500")
-        self.set_message("Schritt 35/53 - Salzburg AG n78 Datenbank fertig")
+        self.set_message("Schritt 35/56 - Salzburg AG n78 Datenbank fertig")
         #Graz Holding
-        GrazHolding_csv_n78 = self.load_data(self.config.get("Content", "GrazHolding_csv_url_n78")).decode("utf-8")
-        self.set_message("Schritt 36/53 - Graz Holding n78 CSV")
+        GrazHolding_csv_n78 = self.load_data(self._config.get("Content", "GrazHolding_csv_url_n78")).decode("utf-8")
+        self.set_message("Schritt 36/56 - Graz Holding n78 CSV")
         GrazHolding_df_n78 = self.cellular_csv_str_to_df(GrazHolding_csv_n78)
-        self.set_message("Schritt 37/53 - Graz Holding n78 Dataframe")
+        self.set_message("Schritt 37/56 - Graz Holding n78 Dataframe")
         self.df_into_db(GrazHolding_df_n78, "Citycom_3500")
-        self.set_message("Schritt 38/53 - Graz Holding n78 Datenbank fertig")
+        self.set_message("Schritt 38/56 - Graz Holding n78 Datenbank fertig")
 
     def load_data(self, url:str) -> bytes:
         """
@@ -255,16 +256,16 @@ class Content:
         Parameters:
             self
         """
-        fixed_json  = json.loads(self.load_data(self.config.get("Content", "Festnetz_json_url")).decode("utf-8"))
-        self.set_message("Schritt 39/53 - Festnetz JSON")
+        fixed_json  = json.loads(self.load_data(self._config.get("Content", "Festnetz_Grant_json_url")).decode("utf-8"))
+        self.set_message("Schritt 39/56 - Festnetz JSON")
         fixed_zip = self.load_data(fixed_json["result"]["resources"][0]["url"])
-        self.set_message("Schritt 40/53 - Festnetz ZIP")
+        self.set_message("Schritt 40/56 - Festnetz ZIP")
         fixed_csv_str = self.zip_to_csv_str(fixed_zip)
-        self.set_message("Schritt 41/53 - Festnetz CSV")
+        self.set_message("Schritt 41/56 - Festnetz CSV")
         df = self.fixed_csv_str_to_df(fixed_csv_str)
-        self.set_message("Schritt 42/53 - Festnetz Dataframe")
+        self.set_message("Schritt 42/56 - Festnetz Dataframe")
         self.df_into_db(df, "Festnetz")
-        self.set_message("Schritt 43/53 - Festnetz Datenbank fertig")
+        self.set_message("Schritt 43/56 - Festnetz Datenbank fertig")
 
     def fixed_csv_str_to_df(self, csv:str):
         """
@@ -294,28 +295,35 @@ class Content:
             self
         """
         #GPKG
-        grant_zip = self.load_data(self.config.get("Content", "GefoerderterAusbau_zip_url"))
-        self.set_message("Schritt 44/53 - Geförderter Ausbau ZIP")
+        grant_json  = json.loads(self.load_data(self._config.get("Content", "Festnetz_Grant_json_url")).decode("utf-8"))
+        self.set_message("Schritt 44/56 - Grant JSON")
+        grant_zip = self.load_data(grant_json["result"]["resources"][2]["url"])
+        self.set_message("Schritt 45/56 - Geförderter Ausbau ZIP")
         grant_gpkg = self.zip_to_gpkg(grant_zip)
-        self.set_message("Schritt 45/53 - Geförderter Ausbau GPKG")
+        self.set_message("Schritt 46/56 - Geförderter Ausbau GPKG")
         gdf = self.grant_gpkg_to_gdf(grant_gpkg)
-        self.set_message("Schritt 46/53 - Geförderter Ausbau Dataframe")
+        self.set_message("Schritt 47/56 - Geförderter Ausbau Dataframe")
         self.df_into_db(gdf, "Gefoerderter_Ausbau")
-        self.set_message("Schritt 47/53 - Geförderter Ausbau Datenbank fertig")
+        self.set_message("Schritt 48/56 - Geförderter Ausbau Datenbank fertig")
+        #BBA Project CSV Links
+        grant_BBA_project_html = self.load_data(self._config.get("Content", "BMF_BBA_html_url")).decode("utf-8")
+        self.set_message("Schritt 49/56 - Geförderter Ausbau Projekte HTML")
+        grant_BBA_project_links = self.grant_bba_get_csv_links(grant_BBA_project_html)
+        self.set_message("Schritt 50/56 - Geförderter Ausbau Projekte CSV links")
         #BBA2020
-        grant_BBA2020_csv = self.load_data(self.config.get("Content", "BBA2020_csv_url")).decode("mbcs")
-        self.set_message("Schritt 48/53 -  Geförderter Ausbau BBA2020 CSV")
+        grant_BBA2020_csv = self.load_data(grant_BBA_project_links[1]).decode("mbcs")
+        self.set_message("Schritt 51/56 -  Geförderter Ausbau BBA2020 CSV")
         grant_BBA2020_df = self.grant_bba_csv_str_to_df(grant_BBA2020_csv)
-        self.set_message("Schritt 49/53 - Geförderter Ausbau BBA2020 Dataframe")
+        self.set_message("Schritt 52/56 - Geförderter Ausbau BBA2020 Dataframe")
         #BBA2030
-        grant_BBA2030_csv = self.load_data(self.config.get("Content", "BBA2030_csv_url")).decode("mbcs")
-        self.set_message("Schritt 50/53 -  Geförderter Ausbau BBA2030 CSV")
+        grant_BBA2030_csv = self.load_data(grant_BBA_project_links[0]).decode("mbcs")
+        self.set_message("Schritt 53/56 -  Geförderter Ausbau BBA2030 CSV")
         grant_BBA2030_df = self.grant_bba_csv_str_to_df(grant_BBA2030_csv)
-        self.set_message("Schritt 51/53 - Geförderter Ausbau BBA2030 Dataframe")
+        self.set_message("Schritt 54/56 - Geförderter Ausbau BBA2030 Dataframe")
         grant_BBA_df = self.grant_combine_dfs(grant_BBA2020_df, grant_BBA2030_df)
-        self.set_message("Schritt 52/53 - Geförderter Ausbau Dataframes kombinieren")
+        self.set_message("Schritt 55/56 - Geförderter Ausbau Dataframes kombinieren")
         self.df_into_db(grant_BBA_df, "BBA_Projekte")
-        self.set_message("Schritt 53/53 - Geförderter Ausbau BBA Datenbank fertig")
+        self.set_message("Schritt 56/56 - Geförderter Ausbau BBA Datenbank fertig")
 
     def zip_to_gpkg(self, zip_archive:bytes) -> bytes:
         """
@@ -334,6 +342,21 @@ class Content:
             with zip_file.open(zip_file.namelist()[0]) as file:
                 response_gpkg = file.read()
         return response_gpkg
+    
+    def grant_bba_get_csv_links(self, html:str) -> list:
+        """
+        Function to extract BBA project data csv links from the overview html document
+
+        Parameters:
+            self
+            html (str) : HTML content of the A1 open data overview page
+
+        Returns:
+            list_of_links (list) : The two extracted zip archive links
+        """
+        soup = BeautifulSoup(html, 'lxml')
+        element = soup.find_all("a", string=re.compile(r"BBA20(2|3)0 Geförderter Ausbau Q(\d)/20(\d\d)"))
+        return [str(element[0]).split("href=\"")[1].split("\"")[0], str(element[1]).split("href=\"")[1].split("\"")[0]]
 
     def grant_gpkg_to_gdf(self, gpkg:bytes) -> gpd.GeoDataFrame:
         """
@@ -469,21 +492,24 @@ class Map:
                         map_layer.add_to(folium_map)
 
             if fixed:
-                self.set_message("Schritt " + str(4 + steps_cellular) + "/" + str(steps) + " - Festnetz Schichten erstellen")
+                self.set_message("Schritt " + str(3 + steps_cellular + int(bool(steps_cellular))) + "/" + str(steps) + " - Festnetz Schichten erstellen")
                 fixed_layer_list = self.fixed(center_ETRS89e, radius*10)
-                self.set_message("Schritt " + str(5 + steps_cellular) + "/" + str(steps) + " - Festnetz Schichten hinzufügen")
+                self.set_message("Schritt " + str(4 + steps_cellular + int(bool(steps_cellular))) + "/" + str(steps) + " - Festnetz Schichten hinzufügen")
                 for map_layer in fixed_layer_list:
                     map_layer.add_to(folium_map)
 
             if grant:
-                self.set_message("Schritt " + str(4 + steps_cellular + (fixed*2)) + "/" + str(steps) + " - Geförderter Ausbau erstellen")
+                self.set_message("Schritt " + str(3 + steps_cellular + int(bool(steps_cellular)) + (fixed*2)) + "/" + str(steps) + " - Geförderter Ausbau erstellen")
                 grant_layer = self.grant(center_ETRS89e, radius*10)
-                self.set_message("Schritt " + str(5 + steps_cellular + (fixed*2)) + "/" + str(steps) + " - Geförderter Ausbau hinzufügen")
+                self.set_message("Schritt " + str(4 + steps_cellular + int(bool(steps_cellular)) + (fixed*2)) + "/" + str(steps) + " - Geförderter Ausbau hinzufügen")
                 grant_layer.add_to(folium_map)
 
             # Add a folium LayerControl to the map.
-            folium.LayerControl(position='topright', collapsed=True, autoZIndex=True).add_to(folium_map)
-            
+            #folium.LayerControl(position='topright', collapsed=True, autoZIndex=True).add_to(folium_map)
+            folium.LayerControl(position='topright', collapsed=False, autoZIndex=True).add_to(folium_map)
+            time.sleep(0.5)
+            self.set_message("ODKT bereit (pywebview)")
+
             return folium_map.get_root().render()
         except ValueError:
             pass
@@ -1190,8 +1216,8 @@ class Api:
         with open("copy.html", "w", encoding="utf-8") as cf:
             cf.write(html_copy)
         print("got html, switch to map")
-        active_window = webview.active_window()
-        active_window.load_url("copy.html")
+        window = webview.windows[0]
+        window.load_url("copy.html")
 
     def updateContent(self):
         self.content.update()
@@ -1205,9 +1231,9 @@ class Api:
     def saveMap(self):
         file_types = ('HTML (*.html)', 'All files (*.*)')
         file_path = window.create_file_dialog(webview.SAVE_DIALOG, directory='/', save_filename='map.html', file_types=file_types)
-        with open(file_path, "w", encoding="utf-8") as save_file:
-            save_file.write(self.html)
-        
+        if file_path != None:
+            with open(file_path, "w", encoding="utf-8") as save_file:
+                save_file.write(self.html)
 
     def error(self):
         raise Exception('This is a Python exception')
