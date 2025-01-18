@@ -1244,7 +1244,7 @@ if __name__ == '__main__':
     api = Api()
     webview.settings['ALLOW_DOWNLOADS'] = True
     if platform.system() == "Windows" and wx.html2.WebView.IsBackendAvailable(wx.html2.WebViewBackendEdge) == False:
-        window = webview.create_window('Open Data Karten Tool - Mobilfunk und Festnetz Österreich', url="missing-webview.html", min_size=(1220, 700), text_select=True)
+        window = webview.create_window('Open Data Karten Tool - Mobilfunk und Festnetz Österreich', url="missing-webview.html", min_size=(1275, 700), text_select=True)
     else:    
-        window = webview.create_window('Open Data Karten Tool - Mobilfunk und Festnetz Österreich', url="internal-ui.html", js_api=api, min_size=(1220, 700), text_select=True)
+        window = webview.create_window('Open Data Karten Tool - Mobilfunk und Festnetz Österreich', url="internal-ui.html", js_api=api, min_size=(1275, 700), text_select=True)
     webview.start()
