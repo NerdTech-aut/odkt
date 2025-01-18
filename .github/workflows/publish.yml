@@ -1,0 +1,91 @@
+name: Build and Publish
+
+on:
+  release:
+    types: [published]
+
+jobs:
+  windows-build:
+    runs-on: windows-latest
+    permissions:
+      contents: write
+    steps:
+    - uses: actions/checkout@v4
+      with:
+        submodules: true
+    - name: Set up Python 3.13
+      uses: actions/setup-python@v5
+      with:
+        python-version: "3.13"
+    - name: Install dependencies
+      run: |
+        python -m pip install --upgrade pip
+        pip install -r requirements.txt
+    - name: Build with PyInstaller
+      run: |
+        pyinstaller odkt.py --add-data internal-ui.html:. --add-data missing-webview.html:. --icon icon.png
+        Copy-Item -Path config.ini -Destination dist/
+        Copy-Item -Path map_data.db -Destination dist/
+        Compress-Archive -Path dist/* -Destination windows.zip
+        dir
+    - name: Upload Artifact
+      uses: actions/upload-artifact@v4
+      with:
+        name: release-executable-windows-zip
+        path: windows.zip
+
+  linux-build:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+    steps:
+    - uses: actions/checkout@v4
+      with:
+        submodules: true
+    - name: Set up Python 3.13
+      uses: actions/setup-python@v5
+      with:
+        python-version: "3.13"
+    - name: Install dependencies
+      run: |
+        python -m pip install --upgrade pip
+        pip install -r requirements.txt
+    - name: Build with PyInstaller
+      run: |
+        pyinstaller odkt.py --add-data internal-ui.html:. --add-data missing-webview.html:. --icon icon.png
+        cp config.ini dist/
+        cp map_data.db dist/
+        tar -czvf linux.tar.gz dist/*
+        dir
+    - name: Upload Artifact
+      uses: actions/upload-artifact@v4
+      with:
+        name: release-executable-linux-zip
+        path: linux.tar.gz
+
+  executable-upload:
+    runs-on: ubuntu-latest
+    needs: [windows-build, linux-build]
+    permissions:
+      contents: write
+    steps:
+      - name: Download windows executable for job windows-build
+        uses: actions/download-artifact@v4
+        with:
+          name: release-executable-windows-zip
+      - name: Download linux executable for job linux-build
+        uses: actions/download-artifact@v4
+        with:
+          name: release-executable-linux-zip
+      - name: Upload zipped windows executable to release
+        uses: JasonEtco/upload-to-release@master
+        with:
+          args: windows.zip application/zip
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      - name: Upload tarballed linux executable to release
+        uses: JasonEtco/upload-to-release@master
+        with:
+          args: linux.tar.gz application/zip
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}

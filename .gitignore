@@ -3,3 +3,8 @@
 *.csv
 *.db
 *.zip
+*.ipynb
+*.geojson
+*.spec
+build/
+dist/

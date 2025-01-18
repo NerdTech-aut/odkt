@@ -6,6 +6,8 @@ import folium
 import sqlite3
 import webview
 import requests
+import platform
+import wx.html2
 import pandas as pd
 import geopandas as gpd
 from zipfile import ZipFile
@@ -349,7 +351,7 @@ class Content:
 
         Parameters:
             self
-            html (str) : HTML content of the A1 open data overview page
+            html (str) : HTML content of the BBA project data overview page
 
         Returns:
             list_of_links (list) : The two extracted zip archive links
@@ -1213,7 +1215,7 @@ class Api:
         html_copy = self.html.replace("</style>", "#back-input{position:absolute;bottom:10px;left:10px;padding:10px;width:95px;z-index:400;background-color:#5FA6AA;color:white;}#save-input{position: absolute;bottom: 10px;left: 115px;padding: 10px;z-index: 400;background-color: #5FA6AA;color: white;}#back-input:hover, #update-input:hover {background-color: #0299a3;color: white;border: 3px solid #0299a3;}.input-field {font-size: 1.5em;border-radius: 10px;background-color: #E8FEFF;padding-left: 1%;border: 3px solid #5FA6AA;}</style>")
         html_copy = html_copy.replace("</body>", "<button class=\"input-field\" id=\"back-input\" onClick=\"history.back()\">Zurück</button><button class=\"input-field\" id=\"save-input\" onClick=\"saveContent()\">Speichern unter</button></body>")
         html_copy = html_copy.replace("</script>", "function saveContent() {pywebview.api.saveMap()}</script>")
-        with open("copy.html", "w", encoding="utf-8") as cf:
+        with open("./_internal/copy.html", "w", encoding="utf-8") as cf:
             cf.write(html_copy)
         print("got html, switch to map")
         window = webview.windows[0]
@@ -1240,5 +1242,9 @@ class Api:
 
 if __name__ == '__main__':
     api = Api()
-    window = webview.create_window('Open Data Karten Tool - Mobilfunk und Festnetz Österreich', url="internal-ui.html", js_api=api, min_size=(1220, 700), text_select=True)
+    webview.settings['ALLOW_DOWNLOADS'] = True
+    if platform.system() == "Windows" and wx.html2.WebView.IsBackendAvailable(wx.html2.WebViewBackendEdge) == False:
+        window = webview.create_window('Open Data Karten Tool - Mobilfunk und Festnetz Österreich', url="missing-webview.html", min_size=(1220, 700), text_select=True)
+    else:    
+        window = webview.create_window('Open Data Karten Tool - Mobilfunk und Festnetz Österreich', url="internal-ui.html", js_api=api, min_size=(1220, 700), text_select=True)
     webview.start()
