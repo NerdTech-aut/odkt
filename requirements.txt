@@ -25,6 +25,9 @@ pyinstaller==6.11.1
 pyinstaller-hooks-contrib==2025.0
 pyogrio==0.10.0
 pyproj==3.7.0
+PyQt5==5.15.10
+PyQt5-sip==12.13.O
+PyQtWebEngine==5.15.6
 python-dateutil==2.9.0.post0
 pythonnet==3.0.5
 pytz==2024.2
