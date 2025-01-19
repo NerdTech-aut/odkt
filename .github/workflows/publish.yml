@@ -24,15 +24,15 @@ jobs:
     - name: Build with PyInstaller
       run: |
         pyinstaller odkt.py --add-data internal-ui.html:. --add-data missing-webview.html:. --icon icon.png
-        Copy-Item -Path config.ini -Destination dist/
-        Copy-Item -Path map_data.db -Destination dist/
-        Compress-Archive -Path dist/* -Destination windows.zip
+        Copy-Item -Path config.ini -Destination dist/odkt/
+        Copy-Item -Path map_data.db -Destination dist/odkt/
+        Compress-Archive -Path dist/* -Destination odkt_windows.zip
         dir
     - name: Upload Artifact
       uses: actions/upload-artifact@v4
       with:
         name: release-executable-windows-zip
-        path: windows.zip
+        path: odkt_windows.zip
 
   linux-build:
     runs-on: ubuntu-latest
@@ -49,21 +49,21 @@ jobs:
     - name: Install dependencies
       run: |
         sudo apt-get update
-        sudo apt-get install libgtk-3-dev
+        sudo apt-get install python3-pyqt5 python3-pyqt5.qtwebengine
         python -m pip install --upgrade pip
         pip install -r requirements.txt
     - name: Build with PyInstaller
       run: |
         pyinstaller odkt.py --add-data internal-ui.html:. --add-data missing-webview.html:. --icon icon.png
-        cp config.ini dist/
-        cp map_data.db dist/
-        tar -czvf linux.tar.gz dist/*
+        cp config.ini dist/odkt/
+        cp map_data.db dist/odkt/
+        tar -czvf odkt_linux.tar.gz dist/*
         dir
     - name: Upload Artifact
       uses: actions/upload-artifact@v4
       with:
         name: release-executable-linux-zip
-        path: linux.tar.gz
+        path: odkt_linux.tar.gz
 
   executable-upload:
     runs-on: ubuntu-latest
@@ -82,12 +82,12 @@ jobs:
       - name: Upload zipped windows executable to release
         uses: JasonEtco/upload-to-release@master
         with:
-          args: windows.zip application/zip
+          args: odkt_windows.zip application/zip
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
       - name: Upload tarballed linux executable to release
         uses: JasonEtco/upload-to-release@master
         with:
-          args: linux.tar.gz application/zip
+          args: odkt_linux.tar.gz application/zip
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
