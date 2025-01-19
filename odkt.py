@@ -5,6 +5,7 @@ import time
 import folium
 import sqlite3
 import webview
+import platform
 import requests
 import pandas as pd
 import geopandas as gpd
@@ -1241,4 +1242,11 @@ class Api:
 if __name__ == '__main__':
     api = Api()
     window = webview.create_window('Open Data Karten Tool - Mobilfunk und Festnetz Österreich', url="internal-ui.html", js_api=api, min_size=(1275, 700), text_select=True)
-    webview.start()
+    if platform.system() == "Windows":
+        print("Windows with MS Edge Chromium")
+        webview.start(gui="edgechromium")
+    elif platform.system() == "Linux":
+        print("Linux based with GTK")
+        webview.start(gui="gtk")
+    else:
+        webview.start()
