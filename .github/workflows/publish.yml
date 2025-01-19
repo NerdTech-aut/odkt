@@ -26,13 +26,13 @@ jobs:
         pyinstaller odkt.py --add-data internal-ui.html:. --add-data missing-webview.html:. --icon icon.png
         Copy-Item -Path config.ini -Destination dist/odkt/
         Copy-Item -Path map_data.db -Destination dist/odkt/
-        Compress-Archive -Path dist/* -Destination odkt_windows.zip
+        Compress-Archive -Path dist/* -Destination odkt_windows_${{ github.ref_name }}.zip
         dir
     - name: Upload Artifact
       uses: actions/upload-artifact@v4
       with:
         name: release-executable-windows-zip
-        path: odkt_windows.zip
+        path: odkt_windows_${{ github.ref_name }}.zip
 
   linux-build:
     runs-on: ubuntu-latest
@@ -49,19 +49,20 @@ jobs:
     - name: Install dependencies
       run: |
         python -m pip install --upgrade pip
+        python -m pip install PyQt5
         pip install -r requirements.txt
     - name: Build with PyInstaller
       run: |
         pyinstaller odkt.py --add-data internal-ui.html:. --add-data missing-webview.html:. --icon icon.png
         cp config.ini dist/odkt/
         cp map_data.db dist/odkt/
-        tar -czvf odkt_linux.tar.gz dist/*
+        tar -czvf odkt_linux_${{ github.ref_name }}.tar.gz dist/*
         dir
     - name: Upload Artifact
       uses: actions/upload-artifact@v4
       with:
         name: release-executable-linux-zip
-        path: odkt_linux.tar.gz
+        path: odkt_linux_${{ github.ref_name }}.tar.gz
 
   executable-upload:
     runs-on: ubuntu-latest
@@ -80,12 +81,12 @@ jobs:
       - name: Upload zipped windows executable to release
         uses: JasonEtco/upload-to-release@master
         with:
-          args: odkt_windows.zip application/zip
+          args: odkt_windows_${{ github.ref_name }}.zip application/zip
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
       - name: Upload tarballed linux executable to release
         uses: JasonEtco/upload-to-release@master
         with:
-          args: odkt_linux.tar.gz application/zip
+          args: odkt_linux_${{ github.ref_name }}.tar.gz application/zip
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
