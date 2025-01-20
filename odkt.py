@@ -7,6 +7,7 @@ import sqlite3
 import webview
 import platform
 import requests
+import warnings
 import pandas as pd
 import geopandas as gpd
 from zipfile import ZipFile
@@ -64,19 +65,6 @@ class Content:
         """
         return self.message
 
-    def update(self):
-        """
-        The main function to update the open data content
-        Calls the specific functions for cellular, fixed and grant open data update
-
-        Parameters:
-            self
-        """
-        self.read_config()
-        self.cellular()
-        self.fixed()
-        self.grant()
-
     def bba_decode_type(self) -> str:
         """
         Function to determine the decode type of bba 2020 and bba 2030 documents for the current platform
@@ -96,6 +84,18 @@ class Content:
             decode_type = "unicode_escape"
         return decode_type
 
+    def update(self):
+        """
+        The main function to update the open data content
+        Calls the specific functions for cellular, fixed and grant open data update
+
+        Parameters:
+            self
+        """
+        self.read_config()
+        self.cellular()
+        self.fixed()
+        self.grant()
 
     def cellular(self):
         """
@@ -412,14 +412,16 @@ class Content:
         Returns:
             gdf (gpd.GeoDataFrame) : The finished geopandas dataframe
         """
-        bytes_io = io.BytesIO(gpkg)
-        gdf = gpd.read_file(bytes_io)
-        gdf['NORTH'] = gdf['l000100v3'].apply(lambda x: int(x.split('mN')[1].split('E')[0]))
-        gdf['EAST'] = gdf['l000100v3'].apply(lambda x: int(x.split('E')[-1]))
-        gdf['BEARBEITUNG_BBA'] = gdf['bearbeitung_bbb'].apply(lambda x: ".".join(((str(x).split(" ")[0]).split("-"))[::-1]))
-        gdf = gdf.rename(columns={'technik': 'TECHNIK', 'antragsnummer': 'ANTRAGSNUMMER'})
-        gdf = gdf[['NORTH', 'EAST', 'TECHNIK', 'ANTRAGSNUMMER', 'BEARBEITUNG_BBA']]
-        return gdf
+        with warnings.catch_warnings():
+            warnings.filterwarnings('ignore', message='.*GPKG application_id.*')
+            bytes_io = io.BytesIO(gpkg)
+            gdf = gpd.read_file(bytes_io, layer=gpd.list_layers(bytes_io).loc[0, 'name'])
+            gdf['NORTH'] = gdf['l000100v3'].apply(lambda x: int(x.split('mN')[1].split('E')[0]))
+            gdf['EAST'] = gdf['l000100v3'].apply(lambda x: int(x.split('E')[-1]))
+            gdf['BEARBEITUNG_BBA'] = gdf['bearbeitung_bbb'].apply(lambda x: ".".join(((str(x).split(" ")[0]).split("-"))[::-1]))
+            gdf = gdf.rename(columns={'technik': 'TECHNIK', 'antragsnummer': 'ANTRAGSNUMMER'})
+            gdf = gdf[['NORTH', 'EAST', 'TECHNIK', 'ANTRAGSNUMMER', 'BEARBEITUNG_BBA']]
+            return gdf
     
     def grant_bba_csv_str_to_df(self, csv:str) -> pd.DataFrame:
         """
@@ -1254,7 +1256,7 @@ class Api:
         self.html = self.folium_map.create(location, float(str(radius).replace(",",".")), A1_5Gn78, Magenta_5Gn78, Drei_5Gn78, GrazHolding_5Gn78, Liwest_5Gn78, MassResponse_5Gn78, SalzburgAG_5Gn78, A1_Speedmap, Magenta_Speedmap, Drei_Speedmap, Festnetz, GeförderterAusbau)
         if self.html != None:
             self.html = self.html.replace("font-size: 1rem;", "font-size: 1.5rem;")
-            html_copy = self.html.replace("</style>", "#back-input{position:absolute;bottom:10px;left:10px;padding:10px;width:95px;z-index:400;background-color:#5FA6AA;color:white;}#save-input{position: absolute;bottom: 10px;left: 115px;padding: 10px;z-index: 400;background-color: #5FA6AA;color: white;}#back-input:hover, #update-input:hover {background-color: #0299a3;color: white;border: 3px solid #0299a3;}.input-field {font-size: 1.5em;border-radius: 10px;background-color: #E8FEFF;padding-left: 1%;border: 3px solid #5FA6AA;}</style>")
+            html_copy = self.html.replace("</style>", "#back-input{position:absolute;bottom:10px;left:10px;padding:10px;width:95px;z-index:400;background-color:#5FA6AA;color:white;}#save-input{position: absolute;bottom: 10px;left: 115px;padding: 10px;z-index: 400;background-color: #5FA6AA;color: white;}#back-input:hover, #save-input:hover {background-color: #0299a3;color: white;border: 3px solid #0299a3;}.input-field {font-size: 1.5em;border-radius: 10px;background-color: #E8FEFF;padding-left: 1%;border: 3px solid #5FA6AA;}</style>")
             html_copy = html_copy.replace("</body>", "<button class=\"input-field\" id=\"back-input\" onClick=\"history.back()\">Zurück</button><button class=\"input-field\" id=\"save-input\" onClick=\"saveContent()\">Speichern unter</button></body>")
             html_copy = html_copy.replace("</script>", "function saveContent() {pywebview.api.saveMap()}</script>")
             with open("./_internal/copy.html", "w", encoding="utf-8") as cf:

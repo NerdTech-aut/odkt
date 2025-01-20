@@ -26,8 +26,9 @@ jobs:
         pyinstaller odkt.py --add-data internal-ui.html:. --icon icon.png --noconsole
         Copy-Item -Path config.ini -Destination dist/odkt/
         Copy-Item -Path map_data.db -Destination dist/odkt/
-        Compress-Archive -Path dist/odkt/* -Destination odkt_windows_${{ github.ref_name }}.zip
-        dir
+        Push-Location dist/odkt
+        Compress-Archive -Path * -Destination odkt_windows_${{ github.ref_name }}.zip
+        Pop-Location
     - name: Upload Artifact
       uses: actions/upload-artifact@v4
       with:
@@ -55,8 +56,9 @@ jobs:
         pyinstaller odkt.py --add-data internal-ui.html:. --icon icon.png
         Copy-Item -Path config.ini -Destination dist/odkt/
         Copy-Item -Path map_data.db -Destination dist/odkt/
-        Compress-Archive -Path dist/odkt/* -Destination odkt_windows_debug_${{ github.ref_name }}.zip
-        dir
+        Push-Location dist/odkt
+        Compress-Archive -Path * -Destination odkt_windows_debug_${{ github.ref_name }}.zip
+        Pop-Location
     - name: Upload Artifact
       uses: actions/upload-artifact@v4
       with:
@@ -86,7 +88,7 @@ jobs:
         pyinstaller odkt.py --add-data internal-ui.html:. --icon icon.png
         cp config.ini dist/odkt/
         cp map_data.db dist/odkt/
-        tar -czvf odkt_linux_${{ github.ref_name }}.tar.gz dist/odkt/*
+        tar -C dist/odkt -czvf odkt_linux_${{ github.ref_name }}.tar.gz .
         dir
     - name: Upload Artifact
       uses: actions/upload-artifact@v4
