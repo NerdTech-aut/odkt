@@ -23,7 +23,7 @@ jobs:
         pip install -r requirements_windows.txt
     - name: Build with PyInstaller
       run: |
-        pyinstaller odkt.py --add-data internal-ui.html:. --icon icon.png --hide-console
+        pyinstaller odkt.py --add-data internal-ui.html:. --icon icon.png --noconsole
         Copy-Item -Path config.ini -Destination dist/odkt/
         Copy-Item -Path map_data.db -Destination dist/odkt/
         Compress-Archive -Path dist/* -Destination odkt_windows_${{ github.ref_name }}.zip
@@ -96,7 +96,7 @@ jobs:
 
   executable-upload:
     runs-on: ubuntu-latest
-    needs: [windows-build, linux-build]
+    needs: [windows-build, windows-build-with-debug-terminal, linux-build,]
     permissions:
       contents: write
     steps:
