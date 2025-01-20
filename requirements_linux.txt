@@ -48,7 +48,6 @@ proxy-tools==0.1.0
 ptyprocess==0.7.0
 pycairo==1.25.1
 pycparser==2.22
-pycups==2.0.1
 Pygments==2.17.2
 PyGObject==3.48.2
 pyinstaller==6.11.1
