@@ -63,7 +63,6 @@ PyQtWebEngine==5.15.6
 pyrsistent==0.20.0
 pyserial==3.5
 python-dateutil==2.9.0.post0
-python-debian==0.1.49+ubuntu2
 pythonnet==3.0.5
 pytz==2024.2
 pywebview==5.3.2
