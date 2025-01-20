@@ -1244,9 +1244,9 @@ if __name__ == '__main__':
     window = webview.create_window('Open Data Karten Tool - Mobilfunk und Festnetz Österreich', url="internal-ui.html", js_api=api, min_size=(1275, 700), text_select=True)
     if platform.system() == "Windows":
         print("Windows with MS Edge Chromium")
-        webview.start(gui="edgechromium")
+        webview.start(gui="edgechromium", debug=True)
     elif platform.system() == "Linux":
         print("Linux based with GTK")
-        webview.start(gui="gtk")
+        webview.start(gui="gtk", debug=True)
     else:
         webview.start()

@@ -23,7 +23,7 @@ jobs:
         pip install -r requirements_windows.txt
     - name: Build with PyInstaller
       run: |
-        pyinstaller odkt.py --add-data internal-ui.html:. --add-data missing-webview.html:. --icon icon.png
+        pyinstaller odkt.py --add-data internal-ui.html:. --icon icon.png --hide-console
         Copy-Item -Path config.ini -Destination dist/odkt/
         Copy-Item -Path map_data.db -Destination dist/odkt/
         Compress-Archive -Path dist/* -Destination odkt_windows_${{ github.ref_name }}.zip
@@ -33,6 +33,35 @@ jobs:
       with:
         name: release-executable-windows-zip
         path: odkt_windows_${{ github.ref_name }}.zip
+
+  windows-build-with-debug-terminal:
+    runs-on: windows-latest
+    permissions:
+      contents: write
+    steps:
+    - uses: actions/checkout@v4
+      with:
+        submodules: true
+    - name: Set up Python 3.13
+      uses: actions/setup-python@v5
+      with:
+        python-version: "3.13"
+    - name: Install dependencies
+      run: |
+        python -m pip install --upgrade pip
+        pip install -r requirements_windows.txt
+    - name: Build with PyInstaller
+      run: |
+        pyinstaller odkt.py --add-data internal-ui.html:. --icon icon.png
+        Copy-Item -Path config.ini -Destination dist/odkt/
+        Copy-Item -Path map_data.db -Destination dist/odkt/
+        Compress-Archive -Path dist/* -Destination odkt_windows_debug_${{ github.ref_name }}.zip
+        dir
+    - name: Upload Artifact
+      uses: actions/upload-artifact@v4
+      with:
+        name: release-executable-windows-debug-zip
+        path: odkt_windows_debug_${{ github.ref_name }}.zip
 
   linux-build:
     runs-on: ubuntu-latest
@@ -54,7 +83,7 @@ jobs:
         pip install -r requirements_linux.txt
     - name: Build with PyInstaller
       run: |
-        pyinstaller odkt.py --add-data internal-ui.html:. --add-data missing-webview.html:. --icon icon.png
+        pyinstaller odkt.py --add-data internal-ui.html:. --icon icon.png
         cp config.ini dist/odkt/
         cp map_data.db dist/odkt/
         tar -czvf odkt_linux_${{ github.ref_name }}.tar.gz dist/*
@@ -75,6 +104,10 @@ jobs:
         uses: actions/download-artifact@v4
         with:
           name: release-executable-windows-zip
+      - name: Download windows executable for job windows-build-with-debug-terminal
+        uses: actions/download-artifact@v4
+        with:
+          name: release-executable-windows-debug-zip
       - name: Download linux executable for job linux-build
         uses: actions/download-artifact@v4
         with:
@@ -83,6 +116,12 @@ jobs:
         uses: JasonEtco/upload-to-release@master
         with:
           args: odkt_windows_${{ github.ref_name }}.zip application/zip
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      - name: Upload zipped windows debug executable to release
+        uses: JasonEtco/upload-to-release@master
+        with:
+          args: odkt_windows_debug_${{ github.ref_name }}.zip application/zip
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
       - name: Upload tarballed linux executable to release
