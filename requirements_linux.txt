@@ -62,7 +62,6 @@ PyQt5-sip==12.13.0
 PyQtWebEngine==5.15.6
 pyrsistent==0.20.0
 pyserial==3.5
-python-apt==2.7.7+ubuntu3
 python-dateutil==2.9.0.post0
 python-debian==0.1.49+ubuntu2
 pythonnet==3.0.5
