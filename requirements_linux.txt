@@ -75,7 +75,6 @@ setuptools==75.8.0
 shapely==2.0.6
 six==1.17.0
 soupsieve==2.6
-systemd-python==235
 typing_extensions==4.12.2
 tzdata==2024.2
 ubuntu-drivers-common==0.0.0
