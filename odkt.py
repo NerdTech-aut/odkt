@@ -1247,6 +1247,6 @@ if __name__ == '__main__':
         webview.start(gui="edgechromium", debug=True)
     elif platform.system() == "Linux":
         print("Linux based with GTK")
-        webview.start(gui="gtk", debug=True)
+        webview.start(gui="gtk", debug=True, ssl=True)
     else:
         webview.start()
