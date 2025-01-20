@@ -6,6 +6,7 @@ certifi==2024.12.14
 cffi==1.17.1
 charset-normalizer==3.4.1
 clr_loader==0.2.7.post0
+cryptography==43.0.1
 folium==0.19.4
 geographiclib==2.0
 geopandas==1.0.1

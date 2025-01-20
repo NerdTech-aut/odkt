@@ -20,6 +20,29 @@ from pyproj.transformer import Transformer
 class Content:
     message = ""
 
+    def read_config(self):
+        """
+        Function to read the config file
+
+        Parameters:
+            self
+        """
+        self._config = ConfigParser()
+        self._config.read("config.ini")
+
+    def get_web_debug_status_from_config(self) -> str:
+        """
+        Function get the web_debug variable from the config file
+
+        Parameters:
+            self
+
+        Returns:
+            web_debug (bool) : Returns the web_debug variable as a boolean
+        """
+        self.read_config()
+        return str(self._config.get("Options", "web_debug")).strip().lower() == 'true'
+
     def set_message(self, msg:str):
         """
         Function to update the message variable with new content
@@ -49,11 +72,30 @@ class Content:
         Parameters:
             self
         """
-        self._config = ConfigParser()
-        self._config.read("config.ini")
+        self.read_config()
         self.cellular()
         self.fixed()
         self.grant()
+
+    def bba_decode_type(self) -> str:
+        """
+        Function to determine the decode type of bba 2020 and bba 2030 documents for the current platform
+
+        Parameters:
+            self
+
+        Returns:
+            decode_type (string) : The decode type for the platform
+        """
+        decode_type = ""
+        if platform.system == "Windows":
+            decode_type = "mbcs"
+        elif platform.system == "Linux":
+            decode_type = "unicode_escape"
+        else:
+            decode_type = "unicode_escape"
+        return decode_type
+
 
     def cellular(self):
         """
@@ -111,7 +153,7 @@ class Content:
         self.set_message("Schritt 22/56 - Drei n78 Dataframe")
         self.df_into_db(Drei_df_n78, "Drei_3500")
         self.set_message("Schritt 23/56 - Drei n78 Datenbank fertig")
-        Drei_csv_Speedmap = self.load_data(self._config.get("Content", "Drei_scv_url_Speedmap")).decode("utf-8")
+        Drei_csv_Speedmap = self.load_data(self._config.get("Content", "Drei_csv_url_Speedmap")).decode("utf-8")
         self.set_message("Schritt 24/56 - Drei Speedmap CSV")
         Drei_df_Speedmap = self.cellular_csv_str_to_df(Drei_csv_Speedmap)
         self.set_message("Schritt 25/56 - Drei Speedmap Dataframe")
@@ -312,12 +354,12 @@ class Content:
         grant_BBA_project_links = self.grant_bba_get_csv_links(grant_BBA_project_html)
         self.set_message("Schritt 50/56 - Geförderter Ausbau Projekte CSV links")
         #BBA2020
-        grant_BBA2020_csv = self.load_data(grant_BBA_project_links[1]).decode("mbcs")
+        grant_BBA2020_csv = self.load_data(grant_BBA_project_links[1]).decode(self.bba_decode_type())
         self.set_message("Schritt 51/56 -  Geförderter Ausbau BBA2020 CSV")
         grant_BBA2020_df = self.grant_bba_csv_str_to_df(grant_BBA2020_csv)
         self.set_message("Schritt 52/56 - Geförderter Ausbau BBA2020 Dataframe")
         #BBA2030
-        grant_BBA2030_csv = self.load_data(grant_BBA_project_links[0]).decode("mbcs")
+        grant_BBA2030_csv = self.load_data(grant_BBA_project_links[0]).decode(self.bba_decode_type())
         self.set_message("Schritt 53/56 -  Geförderter Ausbau BBA2030 CSV")
         grant_BBA2030_df = self.grant_bba_csv_str_to_df(grant_BBA2030_csv)
         self.set_message("Schritt 54/56 - Geförderter Ausbau BBA2030 Dataframe")
@@ -475,7 +517,7 @@ class Map:
                     center_WSG84 = self.center_WSG84_from_string(center)
                     center_ETRS89e = self.center_ETRS89e_from_WSG84(center_WSG84)
                 else:
-                    self.message("Adresse konnte nicht gefunden werden")
+                    self.set_message("Adresse konnte nicht gefunden werden")
                     raise ValueError
 
             folium_map = folium.Map(location=[float(center_WSG84[0]), float(center_WSG84[1])], zoom_start=12)
@@ -1210,15 +1252,16 @@ class Api:
 
     def generateMap(self, radius, location, A1_5Gn78, Magenta_5Gn78, Drei_5Gn78, GrazHolding_5Gn78, Liwest_5Gn78, MassResponse_5Gn78, SalzburgAG_5Gn78, A1_Speedmap, Magenta_Speedmap, Drei_Speedmap, Festnetz, GeförderterAusbau):
         self.html = self.folium_map.create(location, float(str(radius).replace(",",".")), A1_5Gn78, Magenta_5Gn78, Drei_5Gn78, GrazHolding_5Gn78, Liwest_5Gn78, MassResponse_5Gn78, SalzburgAG_5Gn78, A1_Speedmap, Magenta_Speedmap, Drei_Speedmap, Festnetz, GeförderterAusbau)
-        self.html = self.html.replace("font-size: 1rem;", "font-size: 1.5rem;")
-        html_copy = self.html.replace("</style>", "#back-input{position:absolute;bottom:10px;left:10px;padding:10px;width:95px;z-index:400;background-color:#5FA6AA;color:white;}#save-input{position: absolute;bottom: 10px;left: 115px;padding: 10px;z-index: 400;background-color: #5FA6AA;color: white;}#back-input:hover, #update-input:hover {background-color: #0299a3;color: white;border: 3px solid #0299a3;}.input-field {font-size: 1.5em;border-radius: 10px;background-color: #E8FEFF;padding-left: 1%;border: 3px solid #5FA6AA;}</style>")
-        html_copy = html_copy.replace("</body>", "<button class=\"input-field\" id=\"back-input\" onClick=\"history.back()\">Zurück</button><button class=\"input-field\" id=\"save-input\" onClick=\"saveContent()\">Speichern unter</button></body>")
-        html_copy = html_copy.replace("</script>", "function saveContent() {pywebview.api.saveMap()}</script>")
-        with open("./_internal/copy.html", "w", encoding="utf-8") as cf:
-            cf.write(html_copy)
-        print("got html, switch to map")
-        window = webview.windows[0]
-        window.load_url("copy.html")
+        if self.html != None:
+            self.html = self.html.replace("font-size: 1rem;", "font-size: 1.5rem;")
+            html_copy = self.html.replace("</style>", "#back-input{position:absolute;bottom:10px;left:10px;padding:10px;width:95px;z-index:400;background-color:#5FA6AA;color:white;}#save-input{position: absolute;bottom: 10px;left: 115px;padding: 10px;z-index: 400;background-color: #5FA6AA;color: white;}#back-input:hover, #update-input:hover {background-color: #0299a3;color: white;border: 3px solid #0299a3;}.input-field {font-size: 1.5em;border-radius: 10px;background-color: #E8FEFF;padding-left: 1%;border: 3px solid #5FA6AA;}</style>")
+            html_copy = html_copy.replace("</body>", "<button class=\"input-field\" id=\"back-input\" onClick=\"history.back()\">Zurück</button><button class=\"input-field\" id=\"save-input\" onClick=\"saveContent()\">Speichern unter</button></body>")
+            html_copy = html_copy.replace("</script>", "function saveContent() {pywebview.api.saveMap()}</script>")
+            with open("./_internal/copy.html", "w", encoding="utf-8") as cf:
+                cf.write(html_copy)
+            print("got html, switch to map")
+            window = webview.windows[0]
+            window.load_url("copy.html")
 
     def updateContent(self):
         self.content.update()
@@ -1241,12 +1284,13 @@ class Api:
 
 if __name__ == '__main__':
     api = Api()
+    web_debug = api.content.get_web_debug_status_from_config()
     window = webview.create_window('Open Data Karten Tool - Mobilfunk und Festnetz Österreich', url="internal-ui.html", js_api=api, min_size=(1275, 700), text_select=True)
     if platform.system() == "Windows":
         print("Windows with MS Edge Chromium")
-        webview.start(gui="edgechromium", debug=True)
+        webview.start(gui="edgechromium", debug=web_debug, ssl=True)
     elif platform.system() == "Linux":
         print("Linux based with GTK")
-        webview.start(gui="gtk", debug=True, ssl=True)
+        webview.start(gui="gtk", debug=web_debug, ssl=True)
     else:
         webview.start()
