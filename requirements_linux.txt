@@ -17,6 +17,7 @@ cryptography==43.0.1
 defer==1.0.4
 distro==1.9.0
 distro-info==1.0
+fiona==1.10.1
 folium==0.19.4
 geographiclib==2.0
 geopandas==1.0.1
