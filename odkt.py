@@ -4,6 +4,17 @@ import json
 import time
 import folium
 import sqlite3
+import pyogrio
+import pyogrio.errors
+import pyogrio.core
+import pyogrio.gdal_data
+import pyogrio.geopandas
+import pyogrio.proj_data
+import pyogrio.raw
+import pyogrio.tests
+import pyogrio.util
+import pyogrio._compat
+import pyogrio._env
 import webview
 import platform
 import requests
@@ -122,7 +133,7 @@ class Content:
         A1_csv_Speedmap = self.zip_to_csv_str(A1_zip_Speedmap)
         self.set_message("Schritt 8/56 - A1 Speedmap CSV")
         A1_df_Speedmap = self.cellular_csv_str_to_df(A1_csv_Speedmap)
-        self.set_message("Schritt 9/56 -  A1 Speedmap Dataframe")
+        self.set_message("Schritt 9/56 - A1 Speedmap Dataframe")
         self.df_into_db(A1_df_Speedmap, "A1_Speedmap")
         self.set_message("Schritt 10/56 - A1 Speedmap Datenbank fertig")
         #Magenta
