@@ -1251,7 +1251,9 @@ class Api:
 
     def generateMap(self, radius, location, A1_5Gn78, Magenta_5Gn78, Drei_5Gn78, GrazHolding_5Gn78, Liwest_5Gn78, MassResponse_5Gn78, SalzburgAG_5Gn78, A1_Speedmap, Magenta_Speedmap, Drei_Speedmap, Festnetz, GeförderterAusbau):
         self.html = self.folium_map.create(location, float(str(radius).replace(",",".")), A1_5Gn78, Magenta_5Gn78, Drei_5Gn78, GrazHolding_5Gn78, Liwest_5Gn78, MassResponse_5Gn78, SalzburgAG_5Gn78, A1_Speedmap, Magenta_Speedmap, Drei_Speedmap, Festnetz, GeförderterAusbau)
+        print("return to API class")
         if self.html != None:
+            print("success - return isn't empty")
             self.html = self.html.replace("font-size: 1rem;", "font-size: 1.5rem;")
             html_copy = self.html.replace("</style>", "#back-input{position:absolute;bottom:10px;left:10px;padding:10px;width:95px;z-index:400;background-color:#5FA6AA;color:white;}#save-input{position: absolute;bottom: 10px;left: 115px;padding: 10px;z-index: 400;background-color: #5FA6AA;color: white;}#back-input:hover, #save-input:hover {background-color: #0299a3;color: white;border: 3px solid #0299a3;}.input-field {font-size: 1.5em;border-radius: 10px;background-color: #E8FEFF;padding-left: 1%;border: 3px solid #5FA6AA;}</style>")
             html_copy = html_copy.replace("</body>", "<button class=\"input-field\" id=\"back-input\" onClick=\"history.back()\">Zurück</button><button class=\"input-field\" id=\"save-input\" onClick=\"saveContent()\">Speichern unter</button></body>")
@@ -1284,7 +1286,7 @@ class Api:
 if __name__ == '__main__':
     api = Api()
     web_debug = api.content.get_web_debug_status_from_config()
-    window = webview.create_window('Open Data Karten Tool - Mobilfunk und Festnetz Österreich', url="internal-ui.html", js_api=api, min_size=(1275, 700), text_select=True)
+    window = webview.create_window('Open Data Karten Tool - Mobilfunk und Festnetz Österreich', url="internal-ui.html", js_api=api, min_size=(1300, 700), text_select=True)
     if platform.system() == "Windows":
         print("Windows with MS Edge Chromium")
         webview.start(gui="edgechromium", debug=web_debug, ssl=True)
