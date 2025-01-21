@@ -63,7 +63,7 @@ jobs:
         name: release-executable-windows-debug-zip
         path: odkt_windows_debug_${{ github.ref_name }}.zip
 
-  linux-build:ibgirepository-2.0-0
+  linux-build:
     runs-on: ubuntu-latest
     permissions:
       contents: write
