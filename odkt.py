@@ -4,17 +4,6 @@ import json
 import time
 import folium
 import sqlite3
-import pyogrio
-import pyogrio.errors
-import pyogrio.core
-import pyogrio.gdal_data
-import pyogrio.geopandas
-import pyogrio.proj_data
-import pyogrio.raw
-import pyogrio.tests
-import pyogrio.util
-import pyogrio._compat
-import pyogrio._env
 import webview
 import platform
 import requests
@@ -104,8 +93,8 @@ class Content:
             self
         """
         self.read_config()
-        self.cellular()
-        self.fixed()
+        #self.cellular()
+        #self.fixed()
         self.grant()
 
     def cellular(self):
@@ -426,7 +415,7 @@ class Content:
         with warnings.catch_warnings():
             warnings.filterwarnings('ignore', message='.*GPKG application_id.*')
             bytes_io = io.BytesIO(gpkg)
-            gdf = gpd.read_file(bytes_io, layer=gpd.list_layers(bytes_io).loc[0, 'name'])
+            gdf = gpd.read_file(bytes_io)
             gdf['NORTH'] = gdf['l000100v3'].apply(lambda x: int(x.split('mN')[1].split('E')[0]))
             gdf['EAST'] = gdf['l000100v3'].apply(lambda x: int(x.split('E')[-1]))
             gdf['BEARBEITUNG_BBA'] = gdf['bearbeitung_bbb'].apply(lambda x: ".".join(((str(x).split(" ")[0]).split("-"))[::-1]))
