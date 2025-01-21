@@ -7,7 +7,6 @@ import sqlite3
 import webview
 import platform
 import requests
-import warnings
 import pandas as pd
 import geopandas as gpd
 from zipfile import ZipFile
@@ -93,8 +92,8 @@ class Content:
             self
         """
         self.read_config()
-        #self.cellular()
-        #self.fixed()
+        self.cellular()
+        self.fixed()
         self.grant()
 
     def cellular(self):
@@ -355,12 +354,12 @@ class Content:
         self.set_message("Schritt 50/56 - Geförderter Ausbau Projekte CSV links")
         #BBA2020
         grant_BBA2020_csv = self.load_data(grant_BBA_project_links[1]).decode(self.bba_decode_type())
-        self.set_message("Schritt 51/56 -  Geförderter Ausbau BBA2020 CSV")
+        self.set_message("Schritt 51/56 - Geförderter Ausbau BBA2020 CSV")
         grant_BBA2020_df = self.grant_bba_csv_str_to_df(grant_BBA2020_csv)
         self.set_message("Schritt 52/56 - Geförderter Ausbau BBA2020 Dataframe")
         #BBA2030
         grant_BBA2030_csv = self.load_data(grant_BBA_project_links[0]).decode(self.bba_decode_type())
-        self.set_message("Schritt 53/56 -  Geförderter Ausbau BBA2030 CSV")
+        self.set_message("Schritt 53/56 - Geförderter Ausbau BBA2030 CSV")
         grant_BBA2030_df = self.grant_bba_csv_str_to_df(grant_BBA2030_csv)
         self.set_message("Schritt 54/56 - Geförderter Ausbau BBA2030 Dataframe")
         grant_BBA_df = self.grant_combine_dfs(grant_BBA2020_df, grant_BBA2030_df)
@@ -412,16 +411,14 @@ class Content:
         Returns:
             gdf (gpd.GeoDataFrame) : The finished geopandas dataframe
         """
-        with warnings.catch_warnings():
-            warnings.filterwarnings('ignore', message='.*GPKG application_id.*')
-            bytes_io = io.BytesIO(gpkg)
-            gdf = gpd.read_file(bytes_io)
-            gdf['NORTH'] = gdf['l000100v3'].apply(lambda x: int(x.split('mN')[1].split('E')[0]))
-            gdf['EAST'] = gdf['l000100v3'].apply(lambda x: int(x.split('E')[-1]))
-            gdf['BEARBEITUNG_BBA'] = gdf['bearbeitung_bbb'].apply(lambda x: ".".join(((str(x).split(" ")[0]).split("-"))[::-1]))
-            gdf = gdf.rename(columns={'technik': 'TECHNIK', 'antragsnummer': 'ANTRAGSNUMMER'})
-            gdf = gdf[['NORTH', 'EAST', 'TECHNIK', 'ANTRAGSNUMMER', 'BEARBEITUNG_BBA']]
-            return gdf
+        bytes_io = io.BytesIO(gpkg)
+        gdf = gpd.read_file(bytes_io)
+        gdf['NORTH'] = gdf['l000100v3'].apply(lambda x: int(x.split('mN')[1].split('E')[0]))
+        gdf['EAST'] = gdf['l000100v3'].apply(lambda x: int(x.split('E')[-1]))
+        gdf['BEARBEITUNG_BBA'] = gdf['bearbeitung_bbb'].apply(lambda x: ".".join(((str(x).split(" ")[0]).split("-"))[::-1]))
+        gdf = gdf.rename(columns={'technik': 'TECHNIK', 'antragsnummer': 'ANTRAGSNUMMER'})
+        gdf = gdf[['NORTH', 'EAST', 'TECHNIK', 'ANTRAGSNUMMER', 'BEARBEITUNG_BBA']]
+        return gdf
     
     def grant_bba_csv_str_to_df(self, csv:str) -> pd.DataFrame:
         """
